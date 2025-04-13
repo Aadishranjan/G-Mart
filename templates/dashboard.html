@@ -3,62 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>G-Mart Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      display: flex;
-      height: 100vh;
-    }
-
-    .sidebar {
-      width: 200px;
-      background-color: #333;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      padding: 20px 0;
-    }
-
-    .sidebar button {
-      background: none;
-      border: none;
-      color: white;
-      padding: 15px 20px;
-      text-align: left;
-      font-size: 16px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .sidebar button:hover {
-      background-color: #444;
-    }
-
-    .logout {
-      background-color: #AD343E;
-    }
-
-    .logout:hover {
-      background-color: #912c33;
-    }
-
-    .content {
-      flex: 1;
-      padding: 30px;
-      background-color: #f0f0f0;
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
   <div class="sidebar">
     <div>
-      <button onclick="showContent('sell')">Sell</button>
-      <button onclick="showContent('stock')">Stock</button>
-      <button onclick="showContent('sales')">Sales Report</button>
-    </div>
-    <div>
+      <button onclick="loadSection('sell')">Sell</button>
+      <button onclick="loadSection('stock')">Stock</button>
+      <button onclick="loadSection('sales')">Sales Report</button>
       <form action="/logout" method="POST">
         <button type="submit" class="logout">Logout</button>
       </form>
@@ -71,19 +24,15 @@
   </div>
 
   <script>
-    function showContent(section) {
-      const contentDiv = document.getElementById('main-content');
-      if (section === 'sell') {
-        contentDiv.innerHTML = `<h2>Sell</h2><p>This is the sell section.</p>`;
-      } else if (section === 'stock') {
-        contentDiv.innerHTML = `<h2>Stock</h2><p>Manage your stock here.</p>`;
-      } else if (section === 'sales') {
-        {% if session['username'] == 'admin' %}
-        contentDiv.innerHTML = `<h2>Sales Report</h2><p>Confidential sales data for admins only.</p>`;
-        {% else %}
-        contentDiv.innerHTML = `<h2>Access Denied</h2><p>You are not authorized to view this section.</p>`;
-        {% endif %}
-      }
+    function loadSection(section) {
+      fetch(`/${section}`)
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('main-content').innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById('main-content').innerHTML = '<p>Error loading content.</p>';
+        });
     }
   </script>
 

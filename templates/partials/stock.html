@@ -1,0 +1,19 @@
+<div class="stock_header">
+  <h2>Stock</h2>
+  <a href="{{ url_for('add_product') }}">
+    <button>Add</button>
+  </a>
+</div>
+
+<p>Manage your stock here. Add, update, or remove inventory items.</p>
+
+<div class="product_grid">
+  {% for product in products %}
+    <div class="product_card">
+      <img src="{{ product.img_link }}" alt="{{ product.name }}">
+      <h3>{{ product.name }}</h3>
+      <p>Quantity: {{ product.quantity }}</p>
+      <p>Price: ₹{{ product.price }}</p>
+    </div>
+  {% endfor %}
+</div>

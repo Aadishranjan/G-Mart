@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from pymongo import MongoClient
 from db.database import db
+from db.product import insert_product, products_collection
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Required for flashing
@@ -33,22 +34,39 @@ def dashboard():
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('username', None)
-    return redirect(url_for('login'))  
-
+    return redirect(url_for('login')) 
     
-@app.route("/sell")
-def sell_page():
-    return "<h2>Sell Page</h2>"
+@app.route('/sell')
+def sell():
+    return render_template('partials/sell.html')
+    
+@app.route('/stock')
+def stock():
+    products = list(products_collection.find())
+    return render_template('partials/stock.html', products=products)
 
-@app.route("/stock")
-def stock_page():
-    return "<h2>Stock Page</h2>"
+@app.route('/sales')
+def sales():
+    if session.get('username') == 'admin':
+        return render_template('partials/sales.html')
+    else:
+        return render_template('partials/unauthorized.html')
 
-@app.route("/sales")
-def sales_report():
-    if session.get("username") != "admin":
-        return "Access denied", 403
-    return "<h2>Sales Report</h2>"    
+@app.route('/add', methods=['GET', 'POST'])
+def add_product():
+    if request.method == 'POST':
+        name = request.form['product_name']
+        quantity = int(request.form['quantity'])
+        price = float(request.form['price'])
+        img = request.form['img_link']
+
+        success = insert_product(name, quantity, price, img)
+        if success:
+            return redirect(url_for('dashboard'))  # or another success page
+        else:
+            return render_template('add.html', message="Product already exists!")
+
+    return render_template('add.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
