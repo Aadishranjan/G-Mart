@@ -100,3 +100,25 @@ body {
 .product_card p {
   margin: 4px 0;
 }
+
+.card_actions {
+  display: none;
+  margin-top: 10px;
+}
+
+.card_actions a,
+.card_actions button {
+  background-color: #AD343E;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  margin: 2px;
+  cursor: pointer;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.card_actions button:hover,
+.card_actions a:hover {
+  background-color: #912c33;
+}

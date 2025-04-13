@@ -35,6 +35,22 @@
         });
     }
   </script>
+  <script>
+  let pressTimer;
+
+  function startPress(event, id) {
+    pressTimer = setTimeout(() => {
+      const actions = document.getElementById('actions-' + id);
+      if (actions) {
+        actions.style.display = 'block';
+      }
+    }, 800); // 800ms long press
+  }
+
+  function cancelPress() {
+    clearTimeout(pressTimer);
+  }
+</script>
 
 </body>
 </html>
